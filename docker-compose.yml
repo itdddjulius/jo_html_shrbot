@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  jo_shrbot:
+    image: php:8.2-apache
+    container_name: jo_shrbot
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www/html
+    restart: unless-stopped

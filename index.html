@@ -4,147 +4,319 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>JO_SHRBOT</title>
-
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-
   <style>
-    :root{--jo-bg:#000;--jo-text:#fff;--jo-green:#00c853;--jo-border:rgba(255,255,255,.14);--jo-card:rgba(255,255,255,.06);--jo-nav:rgba(0,0,0,.82);--jo-shadow:0 10px 35px rgba(0,0,0,.35)}
-    html{scroll-behavior:smooth}body{background:var(--jo-bg);color:var(--jo-text)}
-    .jo-nav{backdrop-filter:blur(10px);background:var(--jo-nav);border-bottom:1px solid var(--jo-border)}
-    .jo-card{background:var(--jo-card);border:1px solid var(--jo-border);border-radius:18px;box-shadow:var(--jo-shadow)}
+    :root{
+      --jo-bg:#000;
+      --jo-card:rgba(255,255,255,.05);
+      --jo-border:rgba(255,255,255,.14);
+      --jo-green:#00c853;
+      --jo-text:#fff;
+    }
+    html{scroll-behavior:smooth}
+    body{background:var(--jo-bg);color:var(--jo-text)}
+    .jo-nav{background:rgba(0,0,0,.82);backdrop-filter:blur(10px);border-bottom:1px solid var(--jo-border)}
+    .jo-card{background:var(--jo-card);border:1px solid var(--jo-border);border-radius:18px;box-shadow:0 10px 35px rgba(0,0,0,.35)}
     .btn-jo{background:var(--jo-green)!important;color:#000!important;font-weight:800!important;border:none!important}
     .btn-outline-jo{border:1px solid var(--jo-green)!important;color:var(--jo-green)!important;background:transparent!important;font-weight:800!important}
     .btn-outline-jo:hover{background:rgba(0,200,83,.12)!important;color:#fff!important}
-    .jo-link{color:#fff;text-decoration:none}.jo-link:hover{color:var(--jo-green)} .jo-muted{opacity:.78}
-    textarea,input,select{background:rgba(255,255,255,.06)!important;border:1px solid rgba(255,255,255,.16)!important;color:#fff!important}
-    textarea:focus,input:focus,select:focus{box-shadow:0 0 0 .2rem rgba(0,200,83,.18)!important;border-color:rgba(0,200,83,.45)!important}
-    .panel-code{min-height:280px;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;white-space:pre-wrap}
-    .fail-list li{margin-bottom:.35rem}.footer-grid a{color:#fff;text-decoration:none}.footer-grid a:hover{color:var(--jo-green)}
-    .status-pill{border:1px solid var(--jo-border);background:rgba(255,255,255,.04);border-radius:999px;padding:.35rem .8rem;display:inline-flex;align-items:center;gap:.45rem;font-weight:700}
-    .code-output{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px}
-    .spinner-inline{width:1rem;height:1rem;border:.16rem solid rgba(255,255,255,.25);border-top-color:#00c853;border-radius:50%;display:inline-block;animation:spin .8s linear infinite;vertical-align:middle;margin-right:.5rem}
-    @keyframes spin { to { transform: rotate(360deg); } }
+    .form-control,.form-select,textarea{background:rgba(255,255,255,.06)!important;color:#fff!important;border:1px solid rgba(255,255,255,.16)!important}
+    .form-control:focus,.form-select:focus,textarea:focus{box-shadow:0 0 0 .2rem rgba(0,200,83,.18)!important;border-color:rgba(0,200,83,.45)!important}
+    textarea{min-height:380px;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace}
+    .terminal{background:#050505;border:1px solid rgba(0,200,83,.24);color:#d7ffd7;border-radius:14px;padding:1rem;min-height:190px;white-space:pre-wrap;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace}
+    .jo-link{color:#fff;text-decoration:none}
+    .jo-link:hover{color:var(--jo-green)}
+    .stage-chip{display:inline-flex;gap:.45rem;align-items:center;border:1px solid var(--jo-border);background:rgba(255,255,255,.04);border-radius:999px;padding:.35rem .8rem;font-weight:700}
   </style>
 </head>
 <body>
   <nav class="navbar navbar-expand-lg jo-nav sticky-top">
     <div class="container py-2">
-      <a class="navbar-brand text-white fw-bold" href="#top"><i class="fa-solid fa-robot me-2" style="color:var(--jo-green)"></i>JO_SHRBOT</a>
-      <button class="navbar-toggler border-0 text-white" type="button" data-bs-toggle="collapse" data-bs-target="#nav"><i class="fa-solid fa-bars"></i></button>
-      <div class="collapse navbar-collapse" id="nav">
+      <a class="navbar-brand text-white fw-bold" href="#top">
+        <i class="fa-solid fa-code-merge me-2" style="color:var(--jo-green)"></i>JO_SHRBOT
+      </a>
+      <button class="navbar-toggler border-0 text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <div class="collapse navbar-collapse" id="navMenu">
         <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
-          <li class="nav-item"><a class="nav-link text-white jo-muted" href="#panel1">Panel1</a></li>
-          <li class="nav-item"><a class="nav-link text-white jo-muted" href="#panel2">Panel2</a></li>
-          <li class="nav-item"><a class="nav-link text-white jo-muted" href="#workflow">Workflow</a></li>
-          <li class="nav-item"><a class="nav-link text-white jo-muted" href="#integration">Integration</a></li>
-          <li class="nav-item"><button class="btn btn-outline-jo rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#contactModal"><i class="fa-regular fa-envelope me-2"></i>Contact</button></li>
+          <li class="nav-item"><a class="nav-link text-white" href="#workspace">Workspace</a></li>
+          <li class="nav-item"><a class="nav-link text-white" href="#help">Help</a></li>
+          <li class="nav-item">
+            <button class="btn btn-outline-jo rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#contactModal" type="button">
+              <i class="fa-regular fa-envelope me-2"></i>Contact
+            </button>
+          </li>
         </ul>
       </div>
     </div>
   </nav>
 
   <div id="top"></div>
+
   <header class="container pt-5 pb-4">
     <div class="row g-4 align-items-center">
       <div class="col-lg-8">
-        <div class="inline-flex items-center gap-2 px-3 py-2 rounded-full border" style="border-color:var(--jo-border); background:rgba(255,255,255,.04);">
-          <i class="fa-solid fa-code-merge" style="color:var(--jo-green)"></i>
-          <span class="fw-bold">Single HTML5 + Backend API</span>
-          <span class="jo-muted">• Git CLI • GitHub • GitLab • AI refactor</span>
+        <div class="stage-chip mb-3">
+          <i class="fa-solid fa-robot" style="color:var(--jo-green)"></i>
+          PR merge • failure inspection • AI refactor • re-merge cycle
         </div>
-        <h1 class="display-5 fw-bold mt-3 mb-2">JO_SHRBOT</h1>
-        <p class="lead jo-muted mb-4">A two-panel merge and refactor workbench built with HTML5, JavaScript, Bootstrap, Tailwind and FontAwesome, connected to PHP API endpoints.</p>
-        <div class="d-flex flex-wrap gap-2">
-          <a href="#panel1" class="btn btn-jo rounded-pill px-4 py-2"><i class="fa-solid fa-circle-play me-2"></i>Start in Panel1</a>
-          <button class="btn btn-outline-jo rounded-pill px-4 py-2" id="resetAllBtn"><i class="fa-solid fa-rotate-left me-2"></i>Reset</button>
-        </div>
+        <h1 class="display-5 fw-bold mb-3">JO_SHRBOT HTML5 + PHP API Project</h1>
+        <p class="lead opacity-75 mb-0">
+          A two-panel merge and refactor workbench. Submit PR code and target codebase, run merge checks, inspect failures,
+          refactor code, then re-merge until the result is acceptable.
+        </p>
       </div>
       <div class="col-lg-4">
-        <div class="jo-card p-4"><div class="d-flex justify-content-between align-items-center"><div class="fw-bold">Status</div><i class="fa-solid fa-bolt jo-muted"></i></div><hr style="border-color:var(--jo-border);"><div id="globalMessage" class="jo-muted">Ready for merge analysis.</div></div>
+        <div class="jo-card p-4">
+          <div class="fw-bold mb-3">Pipeline</div>
+          <ol class="small opacity-75 m-0 ps-3">
+            <li>Paste PR code and target codebase</li>
+            <li>Click MERGE</li>
+            <li>Inspect failures</li>
+            <li>Click REFACTOR</li>
+            <li>Review output in opposite panel</li>
+            <li>Click RE-MERGE</li>
+          </ol>
+        </div>
       </div>
     </div>
   </header>
 
-  <main class="container pb-5">
-    <section id="panel1" class="pt-3">
-      <div class="jo-card p-4 p-lg-5">
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
-          <div><h2 class="h3 fw-bold mb-1">PANEL1</h2><p class="jo-muted mb-0">Input PR code and CODE-BASE, then attempt MERGE.</p></div>
-          <div id="panel1AlertWrap" class="d-none"><div id="panel1Alert" class="alert alert-success mb-0 py-2 px-3"></div></div>
+  <main id="workspace" class="container pb-5">
+    <div id="statusAlert" class="alert alert-success d-none mb-4"></div>
+
+    <div class="jo-card p-4 p-lg-5 mb-4">
+      <div class="row g-3 mb-3">
+        <div class="col-lg-4">
+          <label class="form-label fw-bold">Merge Provider</label>
+          <select class="form-select" id="provider">
+            <option value="mock" selected>Mock / Local Demo</option>
+            <option value="git_cli">Git CLI Hook</option>
+            <option value="github">GitHub API Hook</option>
+            <option value="gitlab">GitLab API Hook</option>
+          </select>
+        </div>
+        <div class="col-lg-4">
+          <label class="form-label fw-bold">PR Language</label>
+          <input class="form-control" id="language" placeholder="e.g. Python, JavaScript, Ruby" value="Python">
+        </div>
+        <div class="col-lg-4">
+          <label class="form-label fw-bold">AI Refactor Mode</label>
+          <select class="form-select" id="refactorMode">
+            <option value="safe" selected>Safe Patch</option>
+            <option value="cleanup">Cleanup</option>
+            <option value="aggressive">Aggressive</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-lg-6">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div class="fw-bold">PANEL1 — PR / Refactor Candidate</div>
+            <span class="small opacity-75">Editable</span>
+          </div>
+          <textarea id="panel1Code" class="form-control" placeholder="# Paste pull request code here"></textarea>
+          <div class="d-flex gap-2 flex-wrap mt-3">
+            <button class="btn btn-jo rounded-pill px-4" id="mergeBtn" type="button"><i class="fa-solid fa-code-merge me-2"></i>MERGE</button>
+            <button class="btn btn-outline-jo rounded-pill px-4 d-none" id="refactor1Btn" type="button"><i class="fa-solid fa-wand-magic-sparkles me-2"></i>REFACTOR</button>
+            <button class="btn btn-outline-jo rounded-pill px-4 d-none" id="remerge1Btn" type="button"><i class="fa-solid fa-rotate me-2"></i>RE-MERGE</button>
+          </div>
         </div>
 
-        <div class="row g-3 mb-4">
-          <div class="col-md-4"><label class="fw-bold mb-2">Merge Backend</label><select id="mergeBackend" class="form-select"><option value="git_cli">Git CLI</option><option value="github_api">GitHub API</option><option value="gitlab_api">GitLab API</option></select></div>
-          <div class="col-md-4"><label class="fw-bold mb-2">Refactor Backend</label><select id="refactorBackend" class="form-select"><option value="stub">Local Stub</option><option value="ai_api">AI API</option></select></div>
-          <div class="col-md-4"><label class="fw-bold mb-2">Repository / Context Name</label><input id="repoName" class="form-control" placeholder="example-repo"></div>
+        <div class="col-lg-6">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div class="fw-bold">PANEL2 — Target / Refactored Output</div>
+            <span class="small opacity-75">Editable</span>
+          </div>
+          <textarea id="panel2Code" class="form-control" placeholder="# Paste target codebase or refactored result here"></textarea>
+          <div class="d-flex gap-2 flex-wrap mt-3">
+            <button class="btn btn-outline-jo rounded-pill px-4 d-none" id="refactor2Btn" type="button"><i class="fa-solid fa-wand-magic-sparkles me-2"></i>REFACTOR</button>
+            <button class="btn btn-outline-jo rounded-pill px-4 d-none" id="remerge2Btn" type="button"><i class="fa-solid fa-rotate me-2"></i>RE-MERGE</button>
+          </div>
         </div>
+      </div>
+    </div>
 
-        <div class="row g-4">
-          <div class="col-lg-6"><label class="fw-bold mb-2">Pull Request: PR</label><textarea id="panel1Pr" class="form-control panel-code" placeholder="Paste PR code in any coding language..."></textarea></div>
-          <div class="col-lg-6"><label class="fw-bold mb-2">CODE-BASE: CB</label><textarea id="panel1Cb" class="form-control panel-code" placeholder="Paste target code-base repository content..."></textarea></div>
-          <div class="col-12 d-flex gap-2 flex-wrap"><button id="mergePanel1Btn" class="btn btn-jo rounded-pill px-4"><i class="fa-solid fa-code-merge me-2"></i>MERGE</button><button id="refactorPanel1Btn" class="btn btn-outline-jo rounded-pill px-4 d-none"><i class="fa-solid fa-wand-magic-sparkles me-2"></i>REFACTOR</button></div>
+    <div class="jo-card p-4 p-lg-5 mb-4">
+      <div class="row g-4">
+        <div class="col-lg-6">
+          <div class="fw-bold mb-2">Merge / Refactor Log</div>
+          <div class="terminal" id="terminalOutput">Ready. Choose a provider and click MERGE.</div>
         </div>
+        <div class="col-lg-6">
+          <div class="fw-bold mb-2">Detected Failures</div>
+          <div class="terminal" id="failureOutput">No failures yet.</div>
+        </div>
+      </div>
+    </div>
 
-        <div id="panel1FailuresWrap" class="mt-4 d-none"><h3 class="h5 fw-bold text-warning">Merge Failures</h3><ul id="panel1Failures" class="fail-list jo-muted mb-0"></ul></div>
+    <section id="help" class="jo-card p-4 p-lg-5">
+      <h2 class="h4 fw-bold mb-3">How it works</h2>
+      <div class="row g-4 opacity-75">
+        <div class="col-md-3"><div class="fw-bold text-white mb-2">1. Prepare</div><p class="mb-0">Paste PR code in PANEL1 and the target codebase in PANEL2.</p></div>
+        <div class="col-md-3"><div class="fw-bold text-white mb-2">2. Merge</div><p class="mb-0">Use MERGE to call the selected backend merge hook.</p></div>
+        <div class="col-md-3"><div class="fw-bold text-white mb-2">3. Refactor</div><p class="mb-0">If the merge fails, REFACTOR becomes available and sends failures + code to the API.</p></div>
+        <div class="col-md-3"><div class="fw-bold text-white mb-2">4. Re-merge</div><p class="mb-0">Review output in the opposite panel, then use RE-MERGE until satisfied.</p></div>
       </div>
     </section>
 
-    <section id="panel2" class="pt-4">
-      <div class="jo-card p-4 p-lg-5">
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
-          <div><h2 class="h3 fw-bold mb-1">PANEL2</h2><p class="jo-muted mb-0">Review refactored code, then attempt RE-MERGE.</p></div>
-          <div id="panel2AlertWrap" class="d-none"><div id="panel2Alert" class="alert alert-success mb-0 py-2 px-3"></div></div>
+    <footer class="container py-4 mt-4 border-top" style="border-color:rgba(255,255,255,.14)!important;">
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div class="d-flex flex-wrap gap-3">
+          <a class="jo-link" href="#workspace">Workspace</a>
+          <a class="jo-link" href="#help">Help</a>
+          <a class="jo-link" href="#" data-bs-toggle="modal" data-bs-target="#contactModal">Contact</a>
         </div>
-
-        <div class="row g-4">
-          <div class="col-lg-6"><label class="fw-bold mb-2">Refactored Code</label><textarea id="panel2Code" class="form-control panel-code" placeholder="Refactored code appears here..."></textarea></div>
-          <div class="col-lg-6"><label class="fw-bold mb-2">CODE-BASE: CB</label><textarea id="panel2Cb" class="form-control panel-code" placeholder="Panel2 code-base context..."></textarea></div>
-          <div class="col-12 d-flex gap-2 flex-wrap"><button id="remergePanel2Btn" class="btn btn-jo rounded-pill px-4 d-none"><i class="fa-solid fa-code-merge me-2"></i>RE-MERGE</button><button id="refactorPanel2Btn" class="btn btn-outline-jo rounded-pill px-4 d-none"><i class="fa-solid fa-wand-magic-sparkles me-2"></i>REFACTOR</button></div>
-        </div>
-
-        <div id="panel2FailuresWrap" class="mt-4 d-none"><h3 class="h5 fw-bold text-warning">Re-Merge Failures</h3><ul id="panel2Failures" class="fail-list jo-muted mb-0"></ul></div>
+        <a class="jo-link" href="https://raiiarcomio.com" target="_blank" rel="noreferrer">Another Website by Julius Olatokunbo</a>
       </div>
-    </section>
-
-    <section id="workflow" class="pt-4 mt-2"><div class="jo-card p-4 p-lg-5"><h2 class="h4 fw-bold mb-3">Workflow</h2><div class="row g-4 jo-muted"><div class="col-md-3"><div class="fw-bold text-white mb-2">1. MERGE</div><p class="mb-0">Paste PR and CODE-BASE into PANEL1, then click MERGE.</p></div><div class="col-md-3"><div class="fw-bold text-white mb-2">2. FAILURES</div><p class="mb-0">If merge checks fail, PANEL1 displays all failures and REFACTOR appears.</p></div><div class="col-md-3"><div class="fw-bold text-white mb-2">3. REFACTOR</div><p class="mb-0">Refactored code is moved into PANEL2 with an alert message for review.</p></div><div class="col-md-3"><div class="fw-bold text-white mb-2">4. RE-MERGE</div><p class="mb-0">User can re-merge from PANEL2, and if needed refactor back into PANEL1.</p></div></div></div></section>
-
-    <section id="integration" class="pt-4 mt-2"><div class="jo-card p-4 p-lg-5"><h2 class="h4 fw-bold mb-3">Integration Endpoints</h2><div class="jo-muted"><div class="code-output p-3 mb-3"><div class="status-pill mb-2"><i class="fa-solid fa-terminal text-success"></i>POST api/merge_git_cli.php</div><div>Runs real local Git CLI merge validation in a temporary workspace.</div></div><div class="code-output p-3 mb-3"><div class="status-pill mb-2"><i class="fa-brands fa-github text-success"></i>POST api/merge_github.php</div><div>Backend endpoint scaffold for GitHub merge workflows.</div></div><div class="code-output p-3 mb-3"><div class="status-pill mb-2"><i class="fa-brands fa-gitlab text-success"></i>POST api/merge_gitlab.php</div><div>Backend endpoint scaffold for GitLab merge workflows.</div></div><div class="code-output p-3"><div class="status-pill mb-2"><i class="fa-solid fa-brain text-success"></i>POST api/refactor_ai.php</div><div>Backend endpoint for AI-assisted refactoring or local fallback.</div></div></div></div></section>
-
-    <footer class="container py-4 mt-4 border-top footer-grid" style="border-color:var(--jo-border)!important;"><div class="d-flex flex-wrap justify-content-between align-items-center gap-3"><div class="d-flex flex-wrap gap-3"><a href="#panel1">Panel1</a><a href="#panel2">Panel2</a><a href="#workflow">Workflow</a><a href="#integration">Integration</a><a href="#" data-bs-toggle="modal" data-bs-target="#contactModal">Contact</a></div><a class="jo-link" href="https://raiiarcomio.com" target="_self" rel="noreferrer">Another Website by Julius Olatokunbo</a></div></footer>
+    </footer>
   </main>
 
-  <div class="modal fade" id="contactModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-xl modal-dialog-centered"><div class="modal-content" style="background:#050505; border:1px solid var(--jo-border); border-radius:18px;"><div class="modal-header" style="border-bottom:1px solid var(--jo-border);"><h5 class="modal-title text-white fw-bold"><i class="fa-regular fa-envelope me-2" style="color:var(--jo-green)"></i>Contact</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body p-0"><div class="ratio ratio-16x9" style="min-height:70vh;"><iframe src="https://raiiarcomio.com/contact2" title="Contact" style="border:0; background:#000;" referrerpolicy="no-referrer" allowfullscreen></iframe></div></div><div class="modal-footer" style="border-top:1px solid var(--jo-border);"><button class="btn btn-outline-jo rounded-pill px-4" data-bs-dismiss="modal"><i class="fa-solid fa-xmark me-2"></i>Close</button></div></div></div></div>
-
-  <script>
-    const STORAGE_KEY = "jo_shrbot_html_state_v2";
-    const defaultState = {panel1:{pr:"",cb:"",failures:[],show_refactor:false,alert:""},panel2:{refactored_code:"",cb:"",failures:[],show_refactor:false,show_remerge:false,alert:""},settings:{mergeBackend:"git_cli",refactorBackend:"stub",repoName:"example-repo"},global_message:"Ready for merge analysis."};
-    let state = loadState();
-    const panel1Pr=document.getElementById("panel1Pr"), panel1Cb=document.getElementById("panel1Cb"), panel2Code=document.getElementById("panel2Code"), panel2Cb=document.getElementById("panel2Cb"), mergeBackend=document.getElementById("mergeBackend"), refactorBackend=document.getElementById("refactorBackend"), repoName=document.getElementById("repoName"), mergePanel1Btn=document.getElementById("mergePanel1Btn"), refactorPanel1Btn=document.getElementById("refactorPanel1Btn"), remergePanel2Btn=document.getElementById("remergePanel2Btn"), refactorPanel2Btn=document.getElementById("refactorPanel2Btn"), resetAllBtn=document.getElementById("resetAllBtn"), panel1FailuresWrap=document.getElementById("panel1FailuresWrap"), panel1Failures=document.getElementById("panel1Failures"), panel2FailuresWrap=document.getElementById("panel2FailuresWrap"), panel2Failures=document.getElementById("panel2Failures"), panel1AlertWrap=document.getElementById("panel1AlertWrap"), panel1Alert=document.getElementById("panel1Alert"), panel2AlertWrap=document.getElementById("panel2AlertWrap"), panel2Alert=document.getElementById("panel2Alert"), globalMessage=document.getElementById("globalMessage");
-    function loadState(){try{const parsed=JSON.parse(localStorage.getItem(STORAGE_KEY)||"null");return parsed&&typeof parsed==="object"?parsed:structuredClone(defaultState)}catch{return structuredClone(defaultState)}}
-    function saveState(){localStorage.setItem(STORAGE_KEY, JSON.stringify(state))}
-    function resetAlerts(){state.panel1.alert="";state.panel2.alert="";state.global_message=""}
-    function setBusy(message){globalMessage.innerHTML=`<span class="spinner-inline"></span>${escapeHtml(message)}`}
-    function analyzeMerge(pr,cb){const failures=[]; if(!pr.trim()) failures.push("PR code is empty."); if(!cb.trim()) failures.push("CODE-BASE is empty."); if(/<<<<<<<|=======|>>>>>>>/.test(pr)) failures.push("PR contains unresolved merge conflict markers."); if(/<<<<<<<|=======|>>>>>>>/.test(cb)) failures.push("CODE-BASE contains unresolved merge conflict markers."); const prMatches=[...pr.matchAll(/\b(class|function|def)\s+([A-Za-z_][A-Za-z0-9_]*)/gi)], cbMatches=[...cb.matchAll(/\b(class|function|def)\s+([A-Za-z_][A-Za-z0-9_]*)/gi)], prNames=prMatches.map(m=>(m[2]||"").toLowerCase()), cbNames=cbMatches.map(m=>(m[2]||"").toLowerCase()), duplicates=[...new Set(prNames.filter(name=>cbNames.includes(name)))]; duplicates.forEach(name=>failures.push(`Potential symbol collision detected: '${name}' exists in both PR and CODE-BASE.`)); const lines=pr.split(/\r\n|\r|\n/); const longLine=lines.findIndex(line=>line.length>160); if(longLine>=0) failures.push(`PR contains an overlong line at line ${longLine+1}.`); if(/\t/.test(pr)&&/^ {2,}/m.test(pr)) failures.push("PR mixes tabs and spaces for indentation."); if(/TODO|FIXME/i.test(pr)) failures.push("PR still contains TODO/FIXME markers."); return failures}
-    function refactorCodeLocally(code, failures){let refactored=code; refactored=refactored.replace(/\r\n/g,"\n").replace(/\r/g,"\n"); refactored=refactored.replace(/\t/g,"    "); refactored=refactored.replace(/[ \t]+$/gm,""); refactored=refactored.replace(/<<<<<<<|=======|>>>>>>>/g,""); refactored=refactored.replace(/TODO|FIXME/gi,"RESOLVED_NOTE"); refactored=refactored.replace(/\n{3,}/g,"\n\n"); refactored=refactored.split("\n").map(line=>line.length>160?line.match(/.{1,120}/g).join("\n"):line).join("\n"); if(failures.length){refactored+="\n\n/* REFACTOR SUMMARY\n"; failures.forEach(f=>{refactored+=" - "+f+"\n"}); refactored+="*/\n"} return refactored.trim()}
-    function escapeHtml(text){const div=document.createElement("div"); div.textContent=text; return div.innerHTML}
-    async function postJson(url,payload){const response=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}); const data=await response.json(); if(!response.ok||data.ok===false){const msg=(data.failures&&data.failures.join(" | "))||data.message||"Request failed."; throw new Error(msg)} return data}
-    async function mergeWithGitCli(pr,cb){return postJson("api/merge_git_cli.php",{pr,cb,repo_name:repoName.value.trim()})}
-    async function mergeWithGitHubApi(pr,cb){return postJson("api/merge_github.php",{pr,cb,repo_name:repoName.value.trim()})}
-    async function mergeWithGitLabApi(pr,cb){return postJson("api/merge_gitlab.php",{pr,cb,repo_name:repoName.value.trim()})}
-    async function refactorWithAi(code,failures){return postJson("api/refactor_ai.php",{code,failures,repo_name:repoName.value.trim(),backend:refactorBackend.value})}
-    async function runMerge(pr,cb){const backend=mergeBackend.value; if(backend==="git_cli") return mergeWithGitCli(pr,cb); if(backend==="github_api") return mergeWithGitHubApi(pr,cb); if(backend==="gitlab_api") return mergeWithGitLabApi(pr,cb); throw new Error("Unknown merge backend selected.")}
-    async function handleMergePanel1(){resetAlerts(); state.panel1.pr=panel1Pr.value; state.panel1.cb=panel1Cb.value; state.settings.mergeBackend=mergeBackend.value; state.settings.refactorBackend=refactorBackend.value; state.settings.repoName=repoName.value; const localFailures=analyzeMerge(state.panel1.pr,state.panel1.cb); if(localFailures.length){state.panel1.failures=localFailures; state.panel1.show_refactor=true; state.panel2.show_remerge=false; state.global_message="MERGE failed. Review failures in PANEL1."; saveState(); render(); return;} try{setBusy("Running merge..."); const result=await runMerge(state.panel1.pr,state.panel1.cb); state.panel1.failures=result.failures||[]; state.panel1.show_refactor=state.panel1.failures.length>0; if(result.ok){state.panel2.refactored_code=result.merged_code||(state.panel1.cb.trim()+"\n\n/* ===== MERGED PR ===== */\n\n"+state.panel1.pr.trim()); state.panel2.cb=state.panel1.cb; state.panel2.alert="PANEL2 code has BEEN REFACTORED"; state.panel2.show_remerge=true; state.panel2.failures=[]; state.global_message="MERGE succeeded. Result displayed in PANEL2."} else {state.global_message="MERGE failed. Review failures in PANEL1."}}catch(err){state.panel1.failures=[String(err.message||err)]; state.panel1.show_refactor=true; state.panel2.show_remerge=false; state.global_message="MERGE failed. Review failures in PANEL1."} saveState(); render()}
-    async function handleRefactorPanel1(){resetAlerts(); state.settings.refactorBackend=refactorBackend.value; state.settings.repoName=repoName.value; const code=panel1Pr.value||state.panel1.pr; const failures=state.panel1.failures||[]; try{setBusy("Refactoring code..."); let refactored; if(refactorBackend.value==="ai_api"){const result=await refactorWithAi(code,failures); refactored=result.refactored_code}else{refactored=refactorCodeLocally(code,failures)} state.panel2.refactored_code=refactored; state.panel2.cb=panel1Cb.value||state.panel1.cb; state.panel2.alert="PANEL2 code has BEEN REFACTORED"; state.panel2.show_remerge=true; state.panel2.failures=[]; state.panel2.show_refactor=false; state.global_message="Refactored code moved to PANEL2."}catch(err){state.global_message="Refactor failed."; state.panel1.failures=[String(err.message||err)]} saveState(); render()}
-    async function handleRemergePanel2(){resetAlerts(); state.panel2.refactored_code=panel2Code.value; state.panel2.cb=panel2Cb.value; state.settings.mergeBackend=mergeBackend.value; state.settings.repoName=repoName.value; const localFailures=analyzeMerge(state.panel2.refactored_code,state.panel2.cb); if(localFailures.length){state.panel2.failures=localFailures; state.panel2.show_refactor=true; state.global_message="RE-MERGE failed. Review failures in PANEL2."; saveState(); render(); return;} try{setBusy("Running re-merge..."); const result=await runMerge(state.panel2.refactored_code,state.panel2.cb); state.panel2.failures=result.failures||[]; state.panel2.show_refactor=state.panel2.failures.length>0; if(result.ok){state.panel1.pr=result.merged_code||(state.panel2.cb.trim()+"\n\n/* ===== MERGED PR ===== */\n\n"+state.panel2.refactored_code.trim()); state.panel1.cb=state.panel2.cb; state.panel1.alert="PANEL1 code has BEEN REFACTORED"; state.global_message="RE-MERGE succeeded. Result displayed in PANEL1."} else {state.global_message="RE-MERGE failed. Review failures in PANEL2."}}catch(err){state.panel2.failures=[String(err.message||err)]; state.panel2.show_refactor=true; state.global_message="RE-MERGE failed. Review failures in PANEL2."} saveState(); render()}
-    async function handleRefactorPanel2(){resetAlerts(); state.settings.refactorBackend=refactorBackend.value; state.settings.repoName=repoName.value; const code=panel2Code.value||state.panel2.refactored_code; const failures=state.panel2.failures||[]; try{setBusy("Refactoring code..."); let refactored; if(refactorBackend.value==="ai_api"){const result=await refactorWithAi(code,failures); refactored=result.refactored_code}else{refactored=refactorCodeLocally(code,failures)} state.panel1.pr=refactored; state.panel1.cb=panel2Cb.value||state.panel2.cb; state.panel1.alert="PANEL1 code has BEEN REFACTORED"; state.global_message="Refactored code moved back to PANEL1."}catch(err){state.global_message="Refactor failed."; state.panel2.failures=[String(err.message||err)]} saveState(); render()}
-    function renderFailures(targetUl,failures){targetUl.innerHTML=failures.map(f=>`<li>${escapeHtml(f)}</li>`).join("")}
-    function render(){panel1Pr.value=state.panel1.pr||""; panel1Cb.value=state.panel1.cb||""; panel2Code.value=state.panel2.refactored_code||""; panel2Cb.value=state.panel2.cb||""; mergeBackend.value=state.settings.mergeBackend||"git_cli"; refactorBackend.value=state.settings.refactorBackend||"stub"; repoName.value=state.settings.repoName||"example-repo"; globalMessage.textContent=state.global_message||"Ready for merge analysis."; if(state.panel1.failures?.length){panel1FailuresWrap.classList.remove("d-none"); renderFailures(panel1Failures,state.panel1.failures)}else{panel1FailuresWrap.classList.add("d-none"); panel1Failures.innerHTML=""} if(state.panel2.failures?.length){panel2FailuresWrap.classList.remove("d-none"); renderFailures(panel2Failures,state.panel2.failures)}else{panel2FailuresWrap.classList.add("d-none"); panel2Failures.innerHTML=""} if(state.panel1.alert){panel1AlertWrap.classList.remove("d-none"); panel1Alert.textContent=state.panel1.alert}else{panel1AlertWrap.classList.add("d-none"); panel1Alert.textContent=""} if(state.panel2.alert){panel2AlertWrap.classList.remove("d-none"); panel2Alert.textContent=state.panel2.alert}else{panel2AlertWrap.classList.add("d-none"); panel2Alert.textContent=""} refactorPanel1Btn.classList.toggle("d-none",!state.panel1.show_refactor); remergePanel2Btn.classList.toggle("d-none",!state.panel2.show_remerge); refactorPanel2Btn.classList.toggle("d-none",!state.panel2.show_refactor)}
-    function handleReset(){state=structuredClone(defaultState); saveState(); render()}
-    mergePanel1Btn.addEventListener("click",handleMergePanel1); refactorPanel1Btn.addEventListener("click",handleRefactorPanel1); remergePanel2Btn.addEventListener("click",handleRemergePanel2); refactorPanel2Btn.addEventListener("click",handleRefactorPanel2); resetAllBtn.addEventListener("click",handleReset); render();
-  </script>
+  <div class="modal fade" id="contactModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+      <div class="modal-content" style="background:#050505;border:1px solid rgba(255,255,255,.14);border-radius:18px;">
+        <div class="modal-header" style="border-bottom:1px solid rgba(255,255,255,.14);">
+          <h5 class="modal-title text-white fw-bold"><i class="fa-regular fa-envelope me-2" style="color:var(--jo-green)"></i>Contact</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-0">
+          <div class="ratio ratio-16x9" style="min-height:70vh;">
+            <iframe src="https://raiiarcomio.com/contact2" title="Contact" style="border:0;background:#000;" referrerpolicy="no-referrer" allowfullscreen></iframe>
+          </div>
+        </div>
+        <div class="modal-footer" style="border-top:1px solid rgba(255,255,255,.14);">
+          <button class="btn btn-outline-jo rounded-pill px-4" data-bs-dismiss="modal" type="button"><i class="fa-solid fa-xmark me-2"></i>Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const panel1 = document.getElementById('panel1Code');
+    const panel2 = document.getElementById('panel2Code');
+    const provider = document.getElementById('provider');
+    const language = document.getElementById('language');
+    const refactorMode = document.getElementById('refactorMode');
+    const terminalOutput = document.getElementById('terminalOutput');
+    const failureOutput = document.getElementById('failureOutput');
+    const statusAlert = document.getElementById('statusAlert');
+
+    const mergeBtn = document.getElementById('mergeBtn');
+    const refactor1Btn = document.getElementById('refactor1Btn');
+    const remerge1Btn = document.getElementById('remerge1Btn');
+    const refactor2Btn = document.getElementById('refactor2Btn');
+    const remerge2Btn = document.getElementById('remerge2Btn');
+
+    let lastFailures = [];
+    let lastDirection = "1to2";
+
+    function showStatus(message, type='success'){
+      statusAlert.className = `alert alert-${type} mb-4`;
+      statusAlert.textContent = message;
+      statusAlert.classList.remove('d-none');
+      setTimeout(() => statusAlert.classList.add('d-none'), 2500);
+    }
+
+    function logTerminal(message){
+      terminalOutput.textContent = message;
+    }
+
+    function showFailures(items){
+      if(!items || !items.length){
+        failureOutput.textContent = 'No failures detected.';
+        return;
+      }
+      failureOutput.textContent = items.map((x, i) => `${i+1}. ${x}`).join("\n");
+    }
+
+    async function postJson(url, payload){
+      const res = await fetch(url, {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if(!res.ok || data.ok === false) throw new Error(data.error || 'Request failed');
+      return data;
+    }
+
+    async function doMerge(sourcePanel, targetPanel, direction){
+      const payload = {
+        provider: provider.value,
+        language: language.value,
+        pr: sourcePanel.value,
+        cb: targetPanel.value,
+        direction
+      };
+      logTerminal('Running merge...');
+      try{
+        const data = await postJson('api/merge.php', payload);
+        lastFailures = data.failures || [];
+        lastDirection = direction;
+        logTerminal(data.log || 'Merge completed.');
+        showFailures(lastFailures);
+
+        if(data.ok && data.merge_ok){
+          showStatus('Merge completed successfully.');
+          refactor1Btn.classList.add('d-none');
+          refactor2Btn.classList.add('d-none');
+          remerge1Btn.classList.add('d-none');
+          remerge2Btn.classList.add('d-none');
+        }else{
+          showStatus('Merge failed. Refactor is now available.', 'warning');
+          if(direction === '1to2'){
+            refactor1Btn.classList.remove('d-none');
+          }else{
+            refactor2Btn.classList.remove('d-none');
+          }
+        }
+      }catch(err){
+        logTerminal('Error: ' + err.message);
+        showStatus(err.message, 'danger');
+      }
+    }
+
+    async function doRefactor(fromPanel, toPanel, sourceSide){
+      const payload = {
+        mode: refactorMode.value,
+        language: language.value,
+        code: fromPanel.value,
+        failures: lastFailures,
+        source_side: sourceSide
+      };
+      logTerminal('Running refactor...');
+      try{
+        const data = await postJson('api/refactor.php', payload);
+        toPanel.value = data.refactored_code || '';
+        logTerminal(data.log || 'Refactor completed.');
+        showStatus(`${sourceSide === 'panel1' ? 'PANEL2' : 'PANEL1'} code has BEEN REFACTORED`);
+        showFailures(data.remaining_failures || []);
+        if(sourceSide === 'panel1'){
+          remerge2Btn.classList.remove('d-none');
+          refactor1Btn.classList.add('d-none');
+        }else{
+          remerge1Btn.classList.remove('d-none');
+          refactor2Btn.classList.add('d-none');
+        }
+      }catch(err){
+        logTerminal('Error: ' + err.message);
+        showStatus(err.message, 'danger');
+      }
+    }
+
+    mergeBtn.onclick = () => doMerge(panel1, panel2, '1to2');
+    refactor1Btn.onclick = () => doRefactor(panel1, panel2, 'panel1');
+    refactor2Btn.onclick = () => doRefactor(panel2, panel1, 'panel2');
+    remerge1Btn.onclick = () => doMerge(panel1, panel2, '1to2');
+    remerge2Btn.onclick = () => doMerge(panel2, panel1, '2to1');
+
+    panel1.value = "# PR sample\nprint('hello from PR')\n";
+    panel2.value = "# Target codebase sample\nprint('hello from target')\n";
+  </script>
 </body>
 </html>

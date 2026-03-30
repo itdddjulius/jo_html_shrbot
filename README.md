@@ -1,518 +1,224 @@
 # JO_SHRBOT HTML5 + PHP API Project
 
-JO_SHRBOT is a two-panel merge and refactor workbench with a JO-branded UI.
+JO_SHRBOT is a two-panel merge and refactor workbench.
 
-This project contains:
+It is designed to simulate or orchestrate this workflow:
 
-- a **single HTML5 front-end** using:
-  - HTML5
-  - JavaScript
-  - Tailwind CSS
-  - Bootstrap 5
-  - FontAwesome
-- backend **PHP API endpoints** for:
-  - Git CLI merge checks
-  - GitHub API merge integration point
-  - GitLab API merge integration point
-  - AI refactor integration
-- log storage
-- a repeatable browser workflow with `localStorage`
+1. paste pull request code into PANEL1
+2. paste target codebase into PANEL2
+3. click **MERGE**
+4. inspect merge failures
+5. click **REFACTOR**
+6. review refactored output in the opposite panel
+7. click **RE-MERGE**
+8. repeat until the result is acceptable
 
----
+This package provides:
 
-# 1. What the app does
-
-The application has **two horizontal panels**.
-
-## Panel 1
-The user enters:
-
-- Pull Request code (`PR`)
-- CODE-BASE (`CB`)
-
-Then clicks:
-
-- **MERGE**
-
-If merge checks fail:
-
-- all failures are shown in **Panel 1**
-- a **REFACTOR** button appears
-
-## Refactor from Panel 1
-When the user clicks:
-
-- **REFACTOR**
-
-the refactored code is placed into **Panel 2** and the user sees:
-
-- `PANEL2 code has BEEN REFACTORED`
-
-## Panel 2
-The user reviews the refactored code and can click:
-
-- **RE-MERGE**
-
-If the re-merge fails:
-
-- failures are shown in **Panel 2**
-- a new **REFACTOR** button appears in **Panel 2**
-
-If that button is clicked:
-
-- refactored code moves back to **Panel 1**
-- alert appears:
-  - `PANEL1 code has BEEN REFACTORED`
-
-This cycle can continue as many times as needed.
+- single-page HTML5 frontend
+- PHP API endpoints
+- Docker Compose for local hosting
+- a mock merge/refactor flow
+- clear placeholders for real Git CLI / GitHub / GitLab / AI integrations
 
 ---
 
-# 2. Project structure
+## Project Structure
 
 ```text
-JO_SHRBOT_HTML_API_PROJECT/
+JO_SHRBOT_HTML5_PHP_API_Project/
 ├── index.html
+├── index.php
+├── docker-compose.yml
 ├── README.md
 ├── api/
-│   ├── merge_git_cli.php
-│   ├── merge_github.php
-│   ├── merge_gitlab.php
-│   └── refactor_ai.php
+│   ├── merge.php
+│   └── refactor.php
 └── storage/
-    └── logs/
 ```
 
 ---
 
-# 3. Front-end file
-
-## `index.html`
-This is the **single HTML5 front-end**.
-
-It contains:
-
-- navbar
-- two horizontal panels
-- merge workflow UI
-- Bootstrap modal for contact
-- localStorage persistence
-- JavaScript endpoint calls to the PHP backend
-
----
-
-# 4. Backend endpoints
-
-## `api/merge_git_cli.php`
-Runs a **real local Git CLI merge validation** in a temporary workspace.
-
-### What it does
-- validates PR and CODE-BASE
-- initializes a temporary Git repository
-- commits the CODE-BASE as base
-- creates a PR branch
-- commits the PR code
-- attempts a real merge
-
-### Output
-Returns JSON:
-
-```json
-{
-  "ok": true,
-  "failures": [],
-  "merged_code": "..."
-}
-```
-
-or
-
-```json
-{
-  "ok": false,
-  "failures": ["..."]
-}
-```
-
-### Important
-This requires:
-
-- `git` installed on the server
-- `proc_open()` enabled
-- permission to create temporary folders
-
----
-
-## `api/merge_github.php`
-This is the **GitHub API merge integration point**.
-
-### It is scaffolded but not repository-specific yet
-The endpoint already:
-
-- validates input
-- validates configuration
-- returns structured JSON errors
-- clearly marks where GitHub API code must be inserted
-
-### Environment variables used
-Set these before using real GitHub calls:
-
-```bash
-GITHUB_TOKEN=your_token
-GITHUB_OWNER=your_owner
-GITHUB_REPO=your_repo
-GITHUB_API_BASE=https://api.github.com
-```
-
-### Where to add your real GitHub code
-Inside:
-
-```php
-api/merge_github.php
-```
-
-look for:
-
-```php
-INSERT REAL GITHUB API MERGE WORKFLOW HERE
-```
-
-### Suggested GitHub flow
-- create/update branch from CODE-BASE
-- create blob/tree/commit for PR code
-- create pull request
-- attempt merge
-- return merge conflicts or success
-
-### Example GitHub endpoints
-- `POST /repos/{owner}/{repo}/git/blobs`
-- `POST /repos/{owner}/{repo}/git/trees`
-- `POST /repos/{owner}/{repo}/git/commits`
-- `PATCH /repos/{owner}/{repo}/git/refs/heads/{branch}`
-- `POST /repos/{owner}/{repo}/pulls`
-- `PUT /repos/{owner}/{repo}/pulls/{pull_number}/merge`
-
----
-
-## `api/merge_gitlab.php`
-This is the **GitLab API merge integration point**.
-
-### It is scaffolded but not project-specific yet
-The endpoint already:
-
-- validates input
-- validates configuration
-- returns structured JSON errors
-- clearly marks where GitLab API code must be inserted
-
-### Environment variables used
-Set these before using real GitLab calls:
-
-```bash
-GITLAB_TOKEN=your_token
-GITLAB_PROJECT_ID=your_project_id
-GITLAB_API_BASE=https://gitlab.com/api/v4
-```
-
-### Where to add your real GitLab code
-Inside:
-
-```php
-api/merge_gitlab.php
-```
-
-look for:
-
-```php
-INSERT REAL GITLAB API MERGE WORKFLOW HERE
-```
-
-### Suggested GitLab flow
-- create or update repository commit
-- create merge request
-- attempt merge
-- inspect merge status / pipeline status
-
-### Example GitLab endpoints
-- `POST /projects/{id}/repository/commits`
-- `POST /projects/{id}/merge_requests`
-- `PUT /projects/{id}/merge_requests/{merge_request_iid}/merge`
-
----
-
-## `api/refactor_ai.php`
-This endpoint handles **refactoring**.
-
-It supports two modes:
-
-### Mode 1 — local stub
-If the front-end sends:
-
-```json
-{ "backend": "stub" }
-```
-
-then the endpoint performs a local safe refactor fallback:
-- normalizes line endings
-- replaces tabs
-- removes merge markers
-- replaces TODO/FIXME
-- appends a refactor summary comment
-
-### Mode 2 — AI API
-If the front-end sends:
-
-```json
-{ "backend": "ai_api" }
-```
-
-then the endpoint calls a real AI service.
-
-### Environment variables used
-Set these before using the live AI mode:
-
-```bash
-AI_API_URL=https://your-openai-compatible-endpoint
-AI_API_KEY=your_api_key
-AI_MODEL=your_model_name
-```
-
-### Where the AI call is implemented
-Inside:
-
-```php
-api/refactor_ai.php
-```
-
-The live call already exists and expects an OpenAI-compatible API response shape.
-
----
-
-# 5. Completed front-end endpoint calls
-
-The HTML file already contains completed JavaScript functions for:
-
-## `mergeWithGitCli(pr, cb)`
-```javascript
-return postJson("api/merge_git_cli.php", {
-  pr,
-  cb,
-  repo_name: repoName.value.trim()
-});
-```
-
-## `mergeWithGitHubApi(pr, cb)`
-```javascript
-return postJson("api/merge_github.php", {
-  pr,
-  cb,
-  repo_name: repoName.value.trim()
-});
-```
-
-## `mergeWithGitLabApi(pr, cb)`
-```javascript
-return postJson("api/merge_gitlab.php", {
-  pr,
-  cb,
-  repo_name: repoName.value.trim()
-});
-```
-
-## `refactorWithAi(code, failures)`
-```javascript
-return postJson("api/refactor_ai.php", {
-  code,
-  failures,
-  repo_name: repoName.value.trim(),
-  backend: refactorBackend.value
-});
-```
-
-These are **fully wired AJAX calls** to the provided backend endpoints.
-
----
-
-# 6. Browser-side persistence
-
-The front-end stores workflow state in:
-
-```javascript
-localStorage
-```
-
-using the key:
-
-```text
-jo_shrbot_html_state_v2
-```
-
-This preserves:
-- Panel 1 inputs
-- Panel 2 outputs
-- selected backend
-- repository/context name
-- failure lists
-- alert state
-
----
-
-# 7. UI / branding
-
-The UI follows JO branding:
-
-- background: black
-- text: white
-- buttons: green
-- Bootstrap + Tailwind + FontAwesome
-- glassmorphism cards
+## Frontend Features
+
+- black background
+- white text
+- green action buttons
+- responsive Bootstrap + Tailwind UI
 - sticky navbar
-- smooth scrolling
-- footer with:
-  - navigation links
-  - `Another Website by Julius Olatokunbo`
-- contact modal popup linked to:
+- two editable horizontal panels
+- merge / refactor / re-merge cycle
+- terminal-style log panel
+- failure inspection panel
+- footer with all navbar menu items
+- contact modal popup pointing to:
   - `https://raiiarcomio.com/contact2`
 
 ---
 
-# 8. How to run locally
+## Backend Features
 
-## Option A — PHP built-in server
-From the project root, run:
+### `api/merge.php`
+Handles merge requests.
 
+Current behavior:
+- validates JSON payload
+- runs mock merge checks
+- returns:
+  - merge status
+  - detected failures
+  - execution log
+
+Suggested real integrations:
+- Git CLI merge check
+- GitHub mergeability API
+- GitLab mergeability API
+
+### `api/refactor.php`
+Handles refactor requests.
+
+Current behavior:
+- validates JSON payload
+- applies mock fixes
+- returns:
+  - refactored code
+  - log output
+
+Suggested real integrations:
+- AI refactor service
+- OpenAI tool endpoint
+- Anthropic tool endpoint
+- internal refactor microservice
+
+---
+
+## Run With Docker Compose
+
+### Start
 ```bash
-php -S localhost:8000
+docker compose up --build
+```
+
+### Open
+```text
+http://localhost:8080
+```
+
+### Stop
+```bash
+docker compose down
+```
+
+---
+
+## Run Without Docker
+
+You can also serve it from any PHP-enabled local environment:
+
+- XAMPP
+- MAMP
+- WAMP
+- built-in PHP server
+
+Example:
+```bash
+php -S localhost:8080
 ```
 
 Then open:
-
 ```text
-http://localhost:8000/index.html
-```
-
-## Option B — XAMPP / Apache / MAMP
-Copy the project into your web root and browse to:
-
-```text
-http://localhost/your-folder/index.html
+http://localhost:8080
 ```
 
 ---
 
-# 9. Server requirements
+## API Request Examples
 
-Minimum recommended:
+### Merge
+POST `api/merge.php`
 
-- PHP 8+
-- `curl` extension enabled
-- `git` installed if using `merge_git_cli.php`
-- `proc_open()` allowed if using Git CLI backend
-- write permission for:
-  - `storage/logs`
-  - temporary workspace folder creation
-
----
-
-# 10. Environment variable examples
-
-## GitHub
-```bash
-export GITHUB_TOKEN="ghp_xxx"
-export GITHUB_OWNER="your-org"
-export GITHUB_REPO="your-repo"
-export GITHUB_API_BASE="https://api.github.com"
+```json
+{
+  "provider": "mock",
+  "language": "Python",
+  "pr": "print('hello from pr')",
+  "cb": "print('hello from target')",
+  "direction": "1to2"
+}
 ```
 
-## GitLab
-```bash
-export GITLAB_TOKEN="glpat_xxx"
-export GITLAB_PROJECT_ID="123456"
-export GITLAB_API_BASE="https://gitlab.com/api/v4"
-```
+### Refactor
+POST `api/refactor.php`
 
-## AI refactor
-```bash
-export AI_API_URL="https://api.openai.com/v1/chat/completions"
-export AI_API_KEY="sk-xxx"
-export AI_MODEL="gpt-4.1-mini"
+```json
+{
+  "mode": "safe",
+  "language": "Python",
+  "code": "print('hello')\n# TODO",
+  "failures": ["PR contains TODO markers."],
+  "source_side": "panel1"
+}
 ```
 
 ---
 
-# 11. Security notes
+## Where To Insert Real Integrations
 
-Important safeguards:
+### In `api/merge.php`
+Replace the mock logic with:
 
-- never expose tokens in the browser
-- keep GitHub/GitLab/AI credentials server-side only
-- validate all repo, branch, and content inputs before sending to Git or AI
-- restrict which repositories may be touched
-- audit every merge and refactor action
-- consider adding authentication before exposing the endpoints publicly
+- Git CLI merge execution
+- temporary repository checkout
+- branch merge check
+- conflict capture
+- stdout / stderr reporting
 
----
+Or connect to a backend service that calls:
 
-# 12. Recommended next upgrades
+- GitHub mergeability APIs
+- GitLab mergeability APIs
 
-Useful next steps:
+### In `api/refactor.php`
+Replace the mock text replacement with:
 
-- add user authentication
-- add repository URL and branch fields
-- add dry-run vs real-merge toggle
-- add streaming logs in the UI
-- add SQLite job history
-- add syntax/lint/test pipeline before merge
-- add branch protection awareness
-- add file-level diff viewer
-- add Monaco editor for code panes
+- AI prompt call
+- LLM-based code patching
+- diff-based patch response
+- structured validation and retry flow
 
 ---
 
-# 13. Known limitations
+## Recommended Next Enhancements
 
-Current state:
-
-- `merge_git_cli.php` is real and runnable if Git is available
-- `merge_github.php` and `merge_gitlab.php` are intentionally scaffolded integration points
-- `refactor_ai.php` is live for OpenAI-compatible endpoints if environment variables are set
-- the front-end is fully wired, but production rollout should add authentication and tighter backend validation
-
----
-
-# 14. Quick start recommendation
-
-If you want to test immediately:
-
-1. run the project with PHP
-2. use:
-   - merge backend = `git_cli`
-   - refactor backend = `stub`
-3. paste sample PR and CODE-BASE text
-4. click:
-   - `MERGE`
-   - `REFACTOR`
-   - `RE-MERGE`
-
-Then switch to:
-- `github_api`
-- `gitlab_api`
-- `ai_api`
-
-after configuring environment variables and inserting your real repository workflows.
+- Monaco Editor
+- syntax highlighting by detected language
+- file upload support
+- diff viewer
+- patch export
+- branch / repo metadata inputs
+- auth layer for protected merge operations
+- persistent audit logs
+- background job queue for long-running merges
+- webhook integration for GitHub/GitLab
 
 ---
 
-# 15. Branding
+## Branding Requirements Included
 
-Project title:
-- `JO_SHRBOT`
+- footer text links to `https://raiiarcomio.com`
+- footer includes all navbar menu items
+- contact modal popup points to `https://raiiarcomio.com/contact2`
 
-Footer:
-- `Another Website by Julius Olatokunbo`
+---
 
-Footer link:
-- `https://raiiarcomio.com`
+## Summary
 
-Contact modal:
-- `https://raiiarcomio.com/contact2`
+This project is a practical starter for a merge/refactor orchestration UI.
+
+It already includes:
+- frontend workbench
+- PHP API endpoints
+- local docker runtime
+- mock behavior for demo/testing
+
+It is ready to be extended into a real Git + AI automation system.
